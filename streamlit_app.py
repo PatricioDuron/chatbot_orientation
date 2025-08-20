@@ -1,6 +1,5 @@
 import streamlit as st
 import os
-from dotenv import load_dotenv
 
 from langchain_litellm import ChatLiteLLM
 from langchain_community.vectorstores import FAISS
@@ -20,8 +19,6 @@ try:
 except ImportError:
     DDGS_AVAILABLE = False
     st.warning("DuckDuckGo search not available. Install with: pip install duckduckgo-search")
-
-load_dotenv()
 
 
 def load_embeddings_and_db():
@@ -46,7 +43,8 @@ def load_llm():
     try:
         return ChatLiteLLM(
             model="openrouter/mistralai/mistral-small-3.2-24b-instruct:free",
-            temperature=0.25
+            temperature=0.25,
+            api_key=st.secrets["OPENROUTER_API_KEY"]
         )
     except Exception as e:
         st.error(f"Error loading LLM: {str(e)}")
@@ -1025,3 +1023,4 @@ if submit_button and user_input:
 
     # Reload to show new messages
     st.rerun()
+

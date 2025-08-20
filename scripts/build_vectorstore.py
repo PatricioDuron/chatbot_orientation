@@ -2,7 +2,7 @@ import os
 import json
 import re
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_chroma import Chroma
+from langchain_community.vectorstores import FAISS
 from langchain.schema import Document
 from tqdm import tqdm
 
@@ -210,7 +210,8 @@ print(f"📄 Total documents charged for vectorstore: {len(all_documents)}")
 embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
 # Create vectorstore with all documents
-db = Chroma.from_documents(all_documents, embedding_model, persist_directory=vectorstore_path)
+db = FAISS.from_documents(all_documents, embedding_model)
+db.save_local(vectorstore_path)
 
 # Save vectorstores
 print(f"✅ Vectorstore saved in: {vectorstore_path}")

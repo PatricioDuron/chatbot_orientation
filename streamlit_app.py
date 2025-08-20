@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 
 from langchain_litellm import ChatLiteLLM
-from langchain_chroma import Chroma
+from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
 
 # LangChain imports
@@ -27,8 +27,8 @@ load_dotenv()
 def load_embeddings_and_db():
     try:
         embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-        if os.path.exists("vectorstore"):
-            db = Chroma(persist_directory="vectorstore", embedding_function=embedding_model)
+        if os.path.exists("vectorstore/index.faiss"):
+            db = FAISS.load_local("vectorstore", embedding_model, allow_dangerous_deserialization=True)
         else:
             st.warning("Vector store not found at 'vectorstore'. Please ensure your documents are indexed.")
             db = None
